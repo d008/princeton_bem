@@ -1,0 +1,3 @@
+The foils contained in this file are all tripped at x/c = 0.1 , See the individual Qblade files for details.
+
+All foils in this file were run from 200,000 to 4 million Re, with increments of 100,000 between.
