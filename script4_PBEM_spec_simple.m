@@ -12,7 +12,7 @@ dwrite = 0 ;         % Set to 1 to write data to file
 pitch  = 5 ;         % Rotor Pitch (degrees)
 pstat  = 1528 ;      % Tunnel Static Pressure (PSI)
 T      = 20  ;       % Tunnel Temperature (degC)
-Ufs    = 5   ;       % Tunnel Velocity (m/s), single or array input
+Ufs    = 5   ;       % Tunnel Velocity (m/s), single input
 TSR    = 3:1:8 ;     % Tip Speed Ratio, single or array input
 nb     = 3;          % Number of Blades
 %Rotor geometry file location
@@ -21,21 +21,13 @@ nb     = 3;          % Number of Blades
     rloc = [cpath '\BEM_Models\'];
     rname = 'V27_Model_BEM_3xchord_PBEM-geom_NE-25.txt';
     P       = pstat * 6894.75728;
-    rotorspeed
 %% Run BEM Code %% 
-    nf = numel(Ufs);
-for m = 1:nf
-    disp([ num2str(Ufs(m)) ' rot/min (' num2str(m) ' of ' num2str(nf) ')'])
-    % Assume tunnel conditions constant for run %
-    tic;
-    rotorfile = [rloc rname];
-[ bemd(m), bld(m)] = pbem_3(rotorfile, pitch , nb, T, P, U, TSR );
-    t(m) = toc;
-end
+rotorfile = [rloc rname];
+
+[ bemd, bld] = pbem_3(rotorfile, pitch , nb, T, P, Ufs, TSR );
 
 %% Plotting Section %%
 set(0,'DefaultTextInterpreter','tex')
-disp(['Total Run Time: ' num2str(sum(t))])
 fsize = 18; %Font Size
 xlimits = [min([bemd.TSR]) - 0.5 max([bemd.TSR]) + 0.5];
 
@@ -92,8 +84,8 @@ xlimits = [min([bemd.TSR]) - 0.5 max([bemd.TSR]) + 0.5];
  
  % Write Data to File %
    if dwrite == 1
-       save([wfolder 'PBEMspec_Results_' ident],'bemd')
-       save([wfolder 'PBEMspec_Results-blade_' ident],'bld')
+       save([wfolder 'PBEM_Results_' ident],'bemd')
+       save([wfolder 'PBEM_Results-blade_' ident],'bld')
    end
 
     

@@ -52,15 +52,14 @@ relax = 0.5;    % Relaxation factor
         Cd(:,:,m) = dlmread([rfolder char(foil(m)) '\' char(foil(m)) '_CD.txt'],'\t',2,1);
         clear dum
     end
-    plot(Cl(:,:,5))
-    pause
+
 %-------------------%    
 %  Enter BEM Code   %
 %-------------------%
 
 %Loop through all input conditions%
 for k = 1:numel(omega)
-    disp(['Currently on ' num2str(k) ' out of ' num2str(numel(omega))])
+    disp(['Currently on TSR value ' num2str(k) ' of ' num2str(numel(omega))])
       %  Reserve variables  %
       a = zeros(length(rotor(:,1)),1); ap = a; alpha = a; phi = a;
       Clc = a; Cdc = a; Cn = a; Ct = a; Ulocal = a; Rec = a;
@@ -73,12 +72,12 @@ for k = 1:numel(omega)
                 break
             end
          % Find local blade velocity   
-             Ulocal(jj) = ((U(k) .* (1-a(jj))).^2 + ...
+             Ulocal(jj) = ((U .* (1-a(jj))).^2 + ...
                  (omega(k) .* rotor(jj,1) .* (1 + ap(jj))).^2).^(0.5);  
-             Rec(jj) = rho(k) .* rotor(jj,2) .* Ulocal(jj) ./ mu(k);
+             Rec(jj) = rho .* rotor(jj,2) .* Ulocal(jj) ./ mu;
 %              Rec(jj) = 0.2E6;  %Forces a specific Re
          % Find inflow angle for each position  
-             phi(jj) = atan((1 - a(jj)) .* U(k) ./ ...
+             phi(jj) = atan((1 - a(jj)) .* U ./ ...
                     ((1 + ap(jj)) .* omega(k) .* rotor(jj,1) ));
          % Find local aoa
              alpha(jj) = phi(jj) - theta(jj);
@@ -140,8 +139,8 @@ for k = 1:numel(omega)
     end
 
         %Find normal and tangential forces per unit length
-            Pn = 0.5*rho(k).*Ulocal'.^2.*rotor(:,2)'.*Cn';
-            Pt = 0.5*rho(k).*Ulocal'.^2.*rotor(:,2)'.*Ct';
+            Pn = 0.5*rho.*Ulocal'.^2.*rotor(:,2)'.*Cn';
+            Pt = 0.5*rho.*Ulocal'.^2.*rotor(:,2)'.*Ct';
         %Calculate hub moment, linear variation btwn points
             A = zeros(length(rotor(:,1)) - 1,1); B = A; M = A;
         for m = 1:length(rotor(:,1))-1
@@ -158,18 +157,18 @@ for k = 1:numel(omega)
             Ttot = nb * Tn;     %Total axial thrust
             
         %Calculate global properties:
-        bemd.Ct(k) = Ttot ./ (0.5 .* rho(k) .* U(k).^2 .* pi .* rotor(end,1).^2);
-        bemd.Cp(k) = (Mtot * omega(k)) ./ (0.5*rho(k)*U(k).^3*pi*rotor(end,1)^2);
-        bemd.fx(k) = Ttot; bemd.M(k) = Mtot; bemd.ReD(k) = rho(k)*U(k)*rotor(end,1)*2./mu(k);
+        bemd.Ct(k) = Ttot ./ (0.5 .* rho .* U.^2 .* pi .* rotor(end,1).^2);
+        bemd.Cp(k) = (Mtot * omega(k)) ./ (0.5*rho*U.^3*pi*rotor(end,1)^2);
+        bemd.fx(k) = Ttot; bemd.M(k) = Mtot; bemd.ReD(k) = rho*U*rotor(end,1)*2./mu;
         bemd.Power(k) = Mtot * omega(k); 
-        bemd.Retip(k) = rotor(end,2).*rho(k).*sqrt(U(k).^2 + (omega(k).*0.1).^2)./mu(k);
+        bemd.Retip(k) = rotor(end,2).*rho.*sqrt(U.^2 + (omega(k).*0.1).^2)./mu;
         %Blade level variables
         bld.Pt(:,k) = Pt';  bld.Pn(:,k) = Pn';       bld.Rec(:,k)   = Rec;
         bld.a(:,k)  = a;    bld.ap(:,k) = ap;   bld.Cl(:,k)    = Clc;
         bld.Cd(:,k) = Cdc;   bld.alpha(:,k) = alpha .* 180 ./ pi;
         bld.phi(:,k) = phi .* 180 ./ pi; 
         bld.Urtan(:,k) = omega(k).*rotor(:,1).*(1+ap); 
-        bld.Urnorm(:,k) = U(k).*(1-a);
+        bld.Urnorm(:,k) = U.*(1-a);
 end
         bld.abr = rotor(:,1); bld.chord = rotor(:,2); bld.twist = rotor(:,3);
         bld.foil = foil;
