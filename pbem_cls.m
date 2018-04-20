@@ -19,8 +19,7 @@ classdef pbem_cls
         P       = [];
         TSR     = [];
         %-- Location of BEM Rotor Models --%
-        rotor_folder = ['C:\Users\mamil\Documents\Research'...
-                        '\Wind Turbine\V27 Blades\BEM Models\'];
+        rotor_folder = [mfilename('fullpath') '\BEM_Models\'];
     end
     
     methods

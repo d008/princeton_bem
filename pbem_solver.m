@@ -12,7 +12,7 @@ function [bemd, bld ] = pbem_solver(rotor, foil, pitch , nb, T, P, U, TSR )
 %  
 
 %Location of the airfoil data%
-rfolder = 'C:\Users\mamil\Documents\Research\Wind Turbine\NACA Foils\Tripped Foils\';
+rfolder = [mfilename('fullpath') '\Airfoil_Data\Tripped Foils\'];
 nmax = 1000;    % Maximum number of iterations allowed
 tol = 1E-6;     % Convergence tolerance
 relax = 0.5;    % Relaxation factor
