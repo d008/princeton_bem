@@ -1,23 +1,16 @@
-function [bemd, bld ] = pbem_3(rotorfile, pitch , nb, T, P, U, TSR )
+function [bemd, bld ] = pbem_solver(rotor, foil, pitch , nb, T, P, U, TSR )
 %Blade Element Momentum code for HRTF
 %INPUTS:
-% rotorfile = location of rotor geometry file; pitch = blade pitch (deg); 
+% rotor =  struct created with load_rotor
 % nb = # of blades; T = Tunnel Temp (degC); 
 % P = Ambient (Tunnel) Pressure (Pa) gage; U = Tunnel Velocity (m/s)
 % TSR = Tip Speed Ratio (array input accepted);
 %OUTPUTS:
 % bemd = global properties in struct;
 % bld = blade level results in struct array, run conditions are index values;
-%%% Mark Miller 1-19-18 %%% :]
+%%% Mark Miller 4-20-18 %%% ;]
 %  
 
-%Load in rotor geometry%    
-    fid = fopen(rotorfile,'r'); %Format input file
-    rotorgem = textscan(fid,'%f %f %f %s','Delimiter',' ','MultipleDelimsAsOne',1,'Headerlines',1);
-    fclose(fid);
-    rotor = [rotorgem{1} rotorgem{2} rotorgem{3}];
-    foil = rotorgem{4}; 
-    
 %Location of the airfoil data%
 rfolder = 'C:\Users\mamil\Documents\Research\Wind Turbine\NACA Foils\Tripped Foils\';
 nmax = 1000;    % Maximum number of iterations allowed
@@ -25,7 +18,7 @@ tol = 1E-6;     % Convergence tolerance
 relax = 0.5;    % Relaxation factor
 
      % Check to make sure input values are all the correct size  %
-      if numel(T) ~= numel(P) || (numel(T) ~= numel(U))
+      if numel(T) + numel(P) + numel(U) ~= 3
           error('Input Conditons not equal size (T,P,U)!!')
       elseif numel(foil) ~= numel(rotor(:,1))
           disp(['Number of airfoils: ' num2str(numel(foil))])
@@ -173,7 +166,7 @@ end
         bld.abr = rotor(:,1); bld.chord = rotor(:,2); bld.twist = rotor(:,3);
         bld.foil = foil;
         bemd.rho = rho; bemd.mu = mu; bemd.U = U; 
-        bemd.TSR = omega .* rotor(end,1)./(30*U);   
+        bemd.TSR = omega .* rotor(end,1) ./ U ;   
         bemd.speed = omega .* 30 ./ pi;
 
 end

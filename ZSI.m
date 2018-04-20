@@ -1,6 +1,6 @@
 function [rho, mu] = ZSI(TempC,P_Pa_gage)
 %--------------------------------------------------------------------------
-%   [ Rho, mu] = xcorr(TempC,P_Pa)
+%   [ Rho, mu] = ZSI(TempC,P_Pa)
 %   THIS PROGRAM CONTAINS EQUATIONS FOR CALCULATING THE DENSITY AND VISCOSITY 
 %   See Zagarola (1996) Thesis, p294
 %   -INPUT Pressure in Pascals gage pressure
