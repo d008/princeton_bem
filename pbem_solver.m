@@ -11,8 +11,11 @@ function [bemd, bld ] = pbem_solver(rotor, foil, pitch , nb, T, P, U, TSR )
 %%% Mark Miller 4-20-18 %%% ;]
 %  
 
-%Location of the airfoil data%
-rfolder = [mfilename('fullpath') '\Airfoil_Data\Tripped Foils\'];
+    %Location of the airfoil data%
+    dum = mfilename('fullpath');
+    [path, ~, ~] = fileparts(dum);
+    rfolder = [path '\Airfoil_Data\Tripped Foils\'];
+
 nmax = 1000;    % Maximum number of iterations allowed
 tol = 1E-6;     % Convergence tolerance
 relax = 0.5;    % Relaxation factor
@@ -152,7 +155,7 @@ for k = 1:numel(omega)
         %Calculate global properties:
         bemd.Ct(k) = Ttot ./ (0.5 .* rho .* U.^2 .* pi .* rotor(end,1).^2);
         bemd.Cp(k) = (Mtot * omega(k)) ./ (0.5*rho*U.^3*pi*rotor(end,1)^2);
-        bemd.fx(k) = Ttot; bemd.M(k) = Mtot; bemd.ReD(k) = rho*U*rotor(end,1)*2./mu;
+        bemd.fx(k) = Ttot; bemd.torq(k) = Mtot; bemd.ReD(k) = rho*U*rotor(end,1)*2./mu;
         bemd.Power(k) = Mtot * omega(k); 
         bemd.Retip(k) = rotor(end,2).*rho.*sqrt(U.^2 + (omega(k).*0.1).^2)./mu;
         %Blade level variables
