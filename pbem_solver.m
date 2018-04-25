@@ -21,12 +21,12 @@ tol = 1E-6;     % Convergence tolerance
 relax = 0.5;    % Relaxation factor
 
      % Check to make sure input values are all the correct size  %
-      if numel(T) + numel(P) + numel(U) ~= 3
+      if numel([T P U]) ~= 3
           error('Input Conditons not equal size (T,P,U)!!')
       elseif numel(foil) ~= numel(rotor(:,1))
           disp(['Number of airfoils: ' num2str(numel(foil))])
           disp(['Number of radial locations: ' num2str(numel(rotor(:,1)))])
-          error('Airfoils not assigned or too few radius locations given')
+          error('Airfoils not assigned or too few radial locations given')
       end
 
 % Determine tunnel Conditions %
