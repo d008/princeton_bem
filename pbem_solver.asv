@@ -159,30 +159,21 @@ for k = 1:numel(omega)
         %Calculate global properties:
         bemd.Ct(k) = Ttot ./ (0.5 .* rho .* U.^2 .* pi .* rotor(end,1).^2);
         bemd.Cp(k) = (Mtot * omega(k)) ./ (0.5*rho*U.^3*pi*rotor(end,1)^2);
-        bemd.ReD(k) = rho*U*rotor(end,1)*2./mu;
+
         bemd.Retip(k) = rotor(end,2).*rho.*sqrt(U.^2 + (omega(k).*0.1).^2)./mu;
-        bemd.TSR = omega(k) .* rotor(end,1) ./ U ;
-        bemd.fx(k) = Ttot; 
-        bemd.torq(k) = Mtot; 
-        bemd.Power(k) = Mtot * omega(k); 
-        
         %Blade level variables
-        bld.Pt(:,k) = Pt';  
-        bld.Pn(:,k) = Pn';       
-        bld.Rec(:,k)   = Rec;
-        bld.a(:,k)  = a;    bld.ap(:,k) = ap;  
-        bld.alpha(:,k) = alpha .* 180 ./ pi;
-        bld.Cl(:,k)    = Clc; bld.Cd(:,k) = Cdc;   
+        bld.Pt(:,k) = Pt';  bld.Pn(:,k) = Pn';       bld.Rec(:,k)   = Rec;
+        bld.a(:,k)  = a;    bld.ap(:,k) = ap;   bld.Cl(:,k)    = Clc;
+        bld.Cd(:,k) = Cdc;   bld.alpha(:,k) = alpha .* 180 ./ pi;
         bld.phi(:,k) = phi .* 180 ./ pi; 
         bld.Urtan(:,k) = omega(k).*rotor(:,1).*(1+ap); 
         bld.Urnorm(:,k) = U.*(1-a);
         
 end
 
-        bemd.rho = rho; 
-        bemd.mu = mu;
+        bemd.rho = rho; bemd.mu = mu; bemd.U = U; 
+        bemd.TSR = omega .* rotor(end,1) ./ U ;   
         bemd.speed = omega .* 30 ./ pi;
-        bemd.omega = omega;
 
 end
 

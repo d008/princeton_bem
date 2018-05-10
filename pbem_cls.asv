@@ -173,9 +173,8 @@ classdef pbem_cls
         
         %plotting results by index, global
         function hp = plot_g(rt,ind)
-            tsr = [rt.bemd(ind).TSR];  Cp    =  [rt.bemd(ind).Cp]; 
-            Ct  = [rt.bemd(ind).Ct];   torq  = [rt.bemd(ind).torq];
-            fx  = [rt.bemd(ind).fx];   Power = [rt.bemd(ind).Power];
+            tsr = [rt.bemd(ind).TSR]; Cp =  [rt.bemd(ind).Cp]; 
+            Ct =  [rt.bemd(ind).Ct];  torq = [rt.bemd(ind).torq]; fx = [bemd.fx]; Power = [bemd.Power];
            %--- Power Coefficient ---%
             hp = figure;
             scrsz = get(0,'screensize');
@@ -222,9 +221,8 @@ classdef pbem_cls
             subplot(2,3,3)
             aleg = plot(1,1,'x-','Linewidth',2);
             [~,nme,~] = fileparts(rt.name);
-            legentry = [nme '; U = ' num2str(rt.runcon(ind).U,'%2.0f')...
-            ', T = ' num2str(rt.runcon(ind).U,'%2.0f') ...
-            ', P = ' num2str(rt.runcon(ind).p,'%2.2E')];
+            legentry = [nme '; U = ' num2str(rt.U,'%2.0f')...
+            ', T = ' num2str(rt.U,'%2.0f') ', P = ' num2str(rt.p,'%2.2E')];
 
             legh = legend(aleg, legentry,'Location','East');
             set(legh,'Fontunits','points','Fontsize',rt.popt.fsize-6,...
