@@ -13,7 +13,7 @@ function [bemd, bld ] = pbem_solver(rotor, foil , runcon )
 
     %Translate inputs to pbem%
     U = runcon.U; T = runcon.T; p = runcon.p; nb = runcon.nb;
-    pitch = runcon.pitch; TSR = runcon.pitch;
+    pitch = runcon.pitch; TSR = runcon.TSR;
 
     %Location of the airfoil data%
     dum = mfilename('fullpath');
@@ -161,7 +161,7 @@ for k = 1:numel(omega)
         bemd.Cp(k) = (Mtot * omega(k)) ./ (0.5*rho*U.^3*pi*rotor(end,1)^2);
         bemd.ReD(k) = rho*U*rotor(end,1)*2./mu;
         bemd.Retip(k) = rotor(end,2).*rho.*sqrt(U.^2 + (omega(k).*0.1).^2)./mu;
-        bemd.TSR = omega(k) .* rotor(end,1) ./ U ;
+        bemd.TSR(k) = omega(k) .* rotor(end,1) ./ U ;
         bemd.fx(k) = Ttot; 
         bemd.torq(k) = Mtot; 
         bemd.Power(k) = Mtot * omega(k); 

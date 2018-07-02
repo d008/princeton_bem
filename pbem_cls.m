@@ -92,6 +92,8 @@ classdef pbem_cls
             rt.runcon(ind).U     = input('Free-stream Velocity (m/s): ');
             tdum   = input('Tip Speed Ratio(s): ');
             rt.runcon(ind).TSR(1:numel(tdum)) = tdum;
+            %Display runs to user
+            disp_runs(rt)
         end
         
         function hp = rotor_plot(rt)
@@ -129,25 +131,36 @@ classdef pbem_cls
          
         %fcn for loading experimental run conditions, lots options
         
-        function disp_runs(rt)
+        function disp_runs(rt,varargin)
         %Display the run conditions currently available by index
             ic = size(rt.runcon,2);
             for j = 1:ic
                 ntsr = numel( rt.runcon(j).TSR(:) );
-                disp(['Index ' num2str(j,'%d') ])
+                disp(['---------- Index ' num2str(j,'%d') ' ----------'])
                 if ntsr == 0
                     disp('No run conditions set for this index!')
                 else
-                    dispstr = ['U: %2.1f P: %2.1E T: %2.1f TSR: [' ...
-                        repmat('%2.1f ',1,ntsr) '] \n' ];
+                    dispstr = ['U: %2.1f P: %2.1E T: %2.1f TSR: ' ...
+                        repmat('%2.1f; ',1,ntsr) ' \n' ];
                     disparray = {rt.runcon(j).U, rt.runcon(j).p,...
                         rt.runcon(j).T, rt.runcon(j).TSR(1:ntsr)};
                     fprintf(dispstr,disparray{:});
+                    %Display the estimated ReD and Rec values
+                    disp('Estimated Run conditions: ')
+                    [rho, mu] = ZSI(rt.runcon(j).T, rt.runcon(j).p);
+                    D = rt.radius(end) *2; tipc = rt.chord(end);
+                    ReD = rho .* D .* rt.runcon(j).U ./ mu;
+                    Rec = rho .* tipc .* (rt.runcon(j).U).* ...
+                        sqrt(1 + rt.runcon(j).TSR(1:ntsr).^2) ./ mu;
+                    disp(['Re_D =  ' num2str(ReD,'%2.2E')])
+                    dispstr2 = ['Re_c = ' repmat('%2.2E; ',1,ntsr) '\n'];
+                    fprintf(dispstr2,Rec) 
                 end
-                disp('----------------------------')
+                disp('-----------------------------')
             end
         end
         
+       
         function rt = run_pbem(rt)
         %Run single power curve (at 1 or several TSR values)% 
             if isempty(rt.runcon(1).pitch)
