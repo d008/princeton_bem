@@ -6,7 +6,7 @@ classdef pbem_cls
     
     properties
         %These define rotor geometry for the object
-        name    = {};
+        name    = '';
         radius  = [];
         chord   = [];
         twist   = [];
@@ -24,22 +24,28 @@ classdef pbem_cls
     
     methods
 
-        function rt = pbem_cls
+        function rt = loadrotor(rt)
             %Object builder for the pbem_cls class%
              %List and Load Rotor Geometry%
              %Location of BEM Rotor Models%
-            [cfold, ~, ~] = fileparts(mfilename('fullpath'));
-            rt.rotor_folder = [cfold '\BEM_Models\'];
-            avail_rot = dir([rt.rotor_folder '*.txt']);
-            names = {avail_rot.name}';
-            index = (1:1:numel(names))';
-            t = table(index,names);
-            disp('Available Rotors: ')
-            disp(t);
+            rt = defaultdirec(rt);
+            %Display available rotors
+            names = disprotors(rt);
             x = input('Index of rotor:');
             disp(['Rotor chosen is: ' names{x}])
             rt.name = names{x};
             %-Load rotor geometry-%
+            rt = loadrotorfile(rt);
+            %-Create structure for run conditions-%
+            rt = createruncon(rt);           
+        end
+        
+        function rt = loadrotorfile(rt)
+            %Loads in a given rotor geometry for a file path "rfile"
+            if isempty(rt.name)
+                warning('Must set name of rotor to load, rt.name!')
+                return
+            end
             fid = fopen([rt.rotor_folder rt.name],'r');
             rotorgem = textscan(fid,'%f %f %f %s','Delimiter',' ','MultipleDelimsAsOne',1,'Headerlines',1);
             fclose(fid);
@@ -47,7 +53,26 @@ classdef pbem_cls
             rt.chord  = rotorgem{2};
             rt.twist  = rotorgem{3};
             rt.foil   = rotorgem{4}; 
-            %---Struct for solver inputs---%
+        end
+        
+        function rt = setdefaultdirec(rt)
+            %Set default rotor folder location%
+            [cfold, ~, ~] = fileparts(mfilename('fullpath'));
+            rt.rotor_folder = [cfold '\BEM_Models\']; 
+        end
+        
+        function names = disprotors(rt)
+            %Display rotors available in rotor_folder
+            avail_rot = dir([rt.rotor_folder '*.txt']);
+            names = {avail_rot.name}';
+            index = (1:1:numel(names))';
+            t = table(index,names);
+            disp('Available Rotors: ')
+            disp(t); 
+        end
+        
+        function rt = createruncon(rt)
+            %---Struct for solver INPUTS---%
             fn = {'pitch','nb','U','T','p','TSR'};
             fv = cell(1,numel(fn));
             fo = [fn;fv];
@@ -58,7 +83,7 @@ classdef pbem_cls
             %T          %Dry-Air temperature (degrees Celsius)
             %p          %Static pressure (Pascals Gage) i.e. 0 = atmospheric
             %TSR        %Tip Speed Ratio, can be single value or array
-            %---Stucts for solver output---%
+            %---Stucts for solver OUTPUTS---%
            fn = {'Ct','Cp','ReD','Retip','TSR','fx','torq','Power',...
                  'rho','mu','speed','omega'};
            fv = cell(1,numel(fn));
@@ -69,9 +94,8 @@ classdef pbem_cls
            fv = cell(1,numel(fn));
            fo = [fn;fv];
            rt.bld = struct(fo{:});
-           
         end
-        
+       
         function rt = runsetup(rt)
         %Interactively set run conditions%
             %Pick the index for setting run conditions%
