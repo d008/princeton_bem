@@ -8,7 +8,7 @@ function [bemd, bld ] = pbem_solver(rotor, foil , runcon )
 %OUTPUTS:
 % bemd = global properties in struct;
 % bld = blade level results in struct array, run conditions are index values;
-%%% Mark Miller 4-20-18 %%% ;]
+%%% Mark Miller 3/4/19 %%% ;]
 %  
 
     %Translate inputs to pbem%
@@ -18,7 +18,7 @@ function [bemd, bld ] = pbem_solver(rotor, foil , runcon )
     %Location of the airfoil data%
     dum = mfilename('fullpath');
     [path, ~, ~] = fileparts(dum);
-    rfolder = [path '\Airfoil_Data\Tripped Foils\'];
+    rfolder = [path '\Airfoil_Data\'];
 
 nmax = 1000;    % Maximum number of iterations allowed
 tol = 1E-6;     % Convergence tolerance

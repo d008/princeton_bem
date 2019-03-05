@@ -28,7 +28,7 @@ classdef pbem_cls
             %Object builder for the pbem_cls class%
              %List and Load Rotor Geometry%
              %Location of BEM Rotor Models%
-            rt = defaultdirec(rt);
+            rt = setdefaultdirec(rt);
             %Display available rotors
             names = disprotors(rt);
             x = input('Index of rotor:');

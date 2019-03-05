@@ -1,0 +1,16 @@
+Note on file naming convention:
+
+[Airfoil name]_[source]_[transition condition]_[Note]
+
+[Airfoil name] = denomination for airfoil file
+[source] = sim or exp indicates simulation or experimental source, an include more detail if desired. Most sim source is Xfoil
+[transition condition] = gives trip/forced transition information. Often in terms of x/c. 
+Trip-t0p1-b0p2 indicates that the airfoil was forced to transition at x/c=0.1 on the top and x/c =0.2 on the bottom surface.
+[Note] = can be any additional information that is useful
+
+Only the following foils/run cases were tripped so that solutions could converge:
+N63228, Re = 200,000, x/c = 0.3, top and bottom
+
+ See the individual Qblade files for details.
+
+All foils in this file were run from 200,000 to 4 million Re, with increments of 100,000 between.
